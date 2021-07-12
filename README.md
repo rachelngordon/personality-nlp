@@ -28,7 +28,7 @@ This EDA was performed on the personality type desciptions of the Enneagram, Mye
 2. Create a word cloud for each of the personality types (see: https://github.com/rachelngordon/personality-nlp/tree/main/EDA%20%26%20Clustering/WordClouds) after removing stop words, punctuation, and common words such as "personality", "type", etc
 3. Perform k-means clustering using the type desciptions and following the steps listed on this blog: http://brandonrose.org/clustering
 
-Clustering results can be seen here: 
+Clustering results can be seen here: https://github.com/rachelngordon/personality-nlp/blob/main/EDA%20%26%20Clustering/personality_clusters.png
 
 It appears that for the most part personality types were still grouped according to their personality typing system; so most enneagram types were grouped together for example. This is likely due to the fact that all enneagram type descirptions came from the same source, while all MBTI descriptions came from a different source, and so on. Additionally, it is interesting how this suggests that the language used to describe each enneagram type is more similar to one another than, say, the language used to describe two analytical types like an Enneagram 1 or 5 and an INTJ or INTP from Myers-Briggs.
 
