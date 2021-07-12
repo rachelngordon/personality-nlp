@@ -11,7 +11,9 @@ This EDA was performed on the personality type desciptions of the Enneagram, Mye
 2. Create a word cloud for each of the personality types (see: https://github.com/rachelngordon/personality-nlp/tree/main/EDA%20%26%20Clustering/WordClouds) after removing stop words, punctuation, and common words such as "personality", "type", etc
 3. Perform k-means clustering using the type desciptions and following the steps listed on this blog: http://brandonrose.org/clustering
 
-Clustering results can be seen here: https://github.com/rachelngordon/personality-nlp/blob/main/EDA%20%26%20Clustering/personality_clusters.png and the most common words per cluster are as follows:
+Clustering results can be seen here: https://github.com/rachelngordon/personality-nlp/blob/main/EDA%20%26%20Clustering/personality_clusters.png 
+
+The most common words per cluster are as follows:
 
 Cluster 0 words: b'challenges', b'create', b'roadmap', b'reach', b'plans', b'facing',
 
@@ -24,6 +26,7 @@ Cluster 3 words: b'experience', b'social', b'situation', b'interested', b'negati
 Cluster 4 words: b'good', b'love', b'emotions', b'organized', b'difference', b'complete',
 
 Cluster 5 words: b'deep', b'ideals', b'quiet', b'purpose', b'caring', b'create'
+
 
 # EDA Conclusion
 
