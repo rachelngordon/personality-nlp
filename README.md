@@ -58,7 +58,3 @@ Data: https://www.kaggle.com/datasnaek/mbti-type
 - collections
 - codecs
 - mpld3
-- shutil
-- tensorflow
-- tensorflow_hub
-- tensorflow_text (had some issues installing initially but found these sources helpful: https://github.com/tensorflow/tensorflow/issues/647, https://github.com/tensorflow/tensorflow/issues/1097)
