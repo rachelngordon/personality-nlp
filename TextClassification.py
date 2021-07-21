@@ -10,6 +10,8 @@ from sklearn.datasets import make_classification
 import matplotlib.pyplot as plt  
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.linear_model import LogisticRegression
+import nltk
+from nltk.stem.snowball import SnowballStemmer
 
 '''
 ## PREPROCESSING
@@ -107,36 +109,58 @@ test = pd.read_csv('test.csv')
 #print(test.head())
 
 
+# define a function to tokenize and stem the data
+
+stemmer = SnowballStemmer("english")
+
+def tokenize_and_stem(text):
+
+    # first tokenize by sentence, then by word
+    tokens = [word for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
+    filtered_tokens = []
+
+    # filter out any tokens not containing letters
+    for token in tokens:
+        if re.search('[a-zA-Z]', token):
+            filtered_tokens.append(token)
+
+    stems = [stemmer.stem(t) for t in filtered_tokens]
+
+    return stems
+
+
+
 ## FEATURE EXTRACTION
 
 
-vectorizer = TfidfVectorizer()
+vectorizer = TfidfVectorizer(tokenizer = tokenize_and_stem, max_df = 4500, min_df = 6)
 X_train = vectorizer.fit_transform(train['posts'])
 y_train0 = train['type']
 X_val = vectorizer.transform(val['posts'])
-y_val = val['type']
+y_val0 = val['type']
 X_test = vectorizer.transform(test['posts'])
 y_test0 = test['type']
 
 #print(vectorizer.get_feature_names())
 
 
-'''
-## MODELING
-## Multiclass One vs Rest
 
+## MODELING
 # Gradient Boosting
 
 gb_clf = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, 
-                                max_depth=1, random_state=0).fit(X_train, y_train)
+                                max_depth=1, random_state=0).fit(X_train, y_train0)
 
-print(gb_clf.score(X_test, y_test))
 
-# initial accuracy: 0.43164362519201227
+# use validation set to determine what the best min and max document frequencies are
+#print(gb_clf.score(X_val, y_val0))
+# 0.44273635664873173
 
-plot_confusion_matrix(gb_clf, X_test, y_test)  
+# determine accuracy on the test set
+print(gb_clf.score(X_test, y_test0))
+plot_confusion_matrix(gb_clf, X_test, y_test0)  
 plt.savefig('gradientboosting_cm.png', dpi=200)
-'''
+
 
 
 # defines new target y values to create a binary classification problem 
@@ -176,64 +200,66 @@ def define_values(trait):
 
 
 
-## train a classifier to determine if someone is introverted or extroverted
 
-# assign target values (0: introvert, 1: extrovert)
-y_train, y_test = define_values('I')
+## train a binary classifier to determine one of the four MBTI traits
+def train_model(trait1, trait2):
 
-
-logistic_clf1 = LogisticRegression(random_state=0).fit(X_train, y_train)
-
-# check accuracy and plot confusion matrix
-print(logistic_clf1.score(X_test, y_test))
-
-plot_confusion_matrix(logistic_clf1, X_test, y_test)  
-plt.savefig('IE_confmat.png', dpi=200)
+    # assign target values to each personality trait
+    y_train, y_test = define_values(trait1)
 
 
+    logistic_clf = LogisticRegression(random_state=0).fit(X_train, y_train)
 
-## train a classifier to determine if someone is sensing or intuitive
+    y_pred = logistic_clf.predict(X_test).tolist()
 
-# assign target values (0: sensing, 1: intuitive)
-y_train, y_test = define_values('S')
+    # check accuracy and plot confusion matrix
+    print(logistic_clf.score(X_test, y_test))
 
+    plot_confusion_matrix(logistic_clf, X_test, y_test) 
+    doc_name = trait1 + trait2 + '_confmat.png' 
+    plt.savefig(doc_name, dpi=200)
 
-logistic_clf2 = LogisticRegression(random_state=0).fit(X_train, y_train)
-
-# check accuracy and plot confusion matrix
-print(logistic_clf2.score(X_test, y_test))
-
-plot_confusion_matrix(logistic_clf2, X_test, y_test)  
-plt.savefig('SN_confmat.png', dpi=200)
+    return y_pred
 
 
-
-## train a classifier to determine if someone is thinking or feeling
-
-# assign target values (0: thinking, 1: feeling)
-y_train, y_test = define_values('T')
-
-
-logistic_clf3 = LogisticRegression(random_state=0).fit(X_train, y_train)
-
-# check accuracy and plot confusion matrix
-print(logistic_clf3.score(X_test, y_test))
-
-plot_confusion_matrix(logistic_clf3, X_test, y_test)  
-plt.savefig('TF_confmat.png', dpi=200)
+y_pred1 = train_model('I', 'E')
+y_pred2 = train_model('S', 'N')
+y_pred3 = train_model('T', 'F')
+y_pred4 = train_model('J', 'P')
 
 
+# create a list of the full predicted personality types
+y_pred =[]
+for i in range(len(y_pred1)):
+    type = ''
+    if y_pred1[i] == 0:
+        type += 'I'
+    else:
+        type += 'E'
+    if y_pred2[i] == 0:
+        type += 'S'
+    else:
+        type += 'N'
+    if y_pred3[i] == 0:
+        type += 'T'
+    else:
+        type += 'F'
+    if y_pred4[i] == 0:
+        type += 'J'
+    else:
+        type += 'P'
 
-## train a classifier to determine if someone is judging or perceiving
-
-# assign target values (0: judging, 1: perceiving)
-y_train, y_test = define_values('J')
+    y_pred.append(type)
 
 
-logistic_clf4 = LogisticRegression(random_state=0).fit(X_train, y_train)
 
-# check accuracy and plot confusion matrix
-print(logistic_clf4.score(X_test, y_test))
+# calculate accuracy for the combination of all four binary classifiers
 
-plot_confusion_matrix(logistic_clf4, X_test, y_test)  
-plt.savefig('JP_confmat.png', dpi=200)
+num_correct = 0
+for i in range(len(y_pred)):
+    if y_pred[i] == y_test0[i]:
+        num_correct +=1
+
+accuracy = num_correct/len(y_test0)
+print(accuracy)
+
