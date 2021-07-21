@@ -1,6 +1,6 @@
 # personality-nlp
 
-Personality tests are a widely popular method of self discovery and understanding one another. For this project, I decided to first explore the connections among different personality typing systems through k-means clustering. The personality systems I used were the Enneagram, which classifies an indiviudal into one of nine types labeled with numbers 1-9, Myers-Briggs, which assigns an individual to a type consisting of four letters corresponding to four different traits——either introverted (I) or extroverted (E), sensing (S) or intuitive (N), thinking (T) or feeling (F), and judging (J) or perceiving (P)——and the Big Five, or OCEAN, which consists of five traits——openness, conscientiousness, extraversion, agreeableness, and neuroticism——for which an individual is scored to determine what percentage of each trait they may possess. I then went on to focus on the Myers-Briggs personality types using a data set from Kaggle and proceeded to train a model to classify an individual's personality type based on the language of their online forum posts.
+Personality tests are a widely popular method of self discovery and understanding one another. For this project, I decided to first explore the connections among different personality typing systems through k-means clustering. The personality systems I used were the Enneagram, which classifies an indiviudal into one of nine types labeled with numbers 1-9, Myers-Briggs, which assigns an individual to a type consisting of four letters corresponding to four different traits——either introverted (I) or extroverted (E), sensing (S) or intuitive (N), thinking (T) or feeling (F), and judging (J) or perceiving (P)——and the Big Five, or OCEAN, which consists of five traits——openness, conscientiousness, extraversion, agreeableness, and neuroticism——for which an individual is scored to determine what percentage of each trait they may possess. I then went on to focus on the Myers-Briggs personality types using a data set from Kaggle and proceeded to train a multiclass gradient boosting classifier to classify an individual's personality type based on the language of their online forum posts.
 
 
 # Exploratory Data Analysis
@@ -38,6 +38,12 @@ In the documentary "Persona: The Dark Truth Behind Personality Tests" Merve Emre
 # Model Building
 
 Data: https://www.kaggle.com/datasnaek/mbti-type
+
+The gradient boosting classifier with min_df = 5 and max_df = 4500 achieved an accuracy of about 42-44%, less than half but indicative of the difficulty of this classification problem with a total of 16 classes. Additionally, the data were very imbalanced with a majority of the observations being introverted and intuitive types rather than extroverted and sensing types, leading to a skew in the accuracy of the model as well. The classifier was clearly best at identifying INFP personalities as those were one of the most prevalent in the training data, while it struggled to identify other types without 'IN' as the first two letters. 
+
+I then went on to compare this accuracy with training four separate binary logistic classifiers on each of the four personality trait categories and then combining those results. They each achieved about 70-80% accuracy on their individual personality trait, but when these results were combined for each observation, the accuracy was only about 38-40%, which is slightly less than gradient boosting. These four classifiers also demonstrated the effects of having imbalanced training data, and almost every observation in the test data was classified as introverted and intuitive. 
+
+Therefore, although these methods provided some insights into how best to go abot solving this problem, we must first explore how to handle the imbalanced data using sources such as this: https://www.kdnuggets.com/2017/06/7-techniques-handle-imbalanced-data.html
 
 
 # Packages Used
