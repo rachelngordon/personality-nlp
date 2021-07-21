@@ -12,6 +12,7 @@ from sklearn import feature_extraction
 import mpld3
 import spacy
 from spacy.lang.en import English
+from nltk.stem.snowball import SnowballStemmer
 
 
 # read in the data
@@ -66,7 +67,7 @@ type_descriptions = pd.DataFrame(list(type_descriptions.items()),columns = ['Typ
 
 ## STEMMING & TOKENIZING
 
-from nltk.stem.snowball import SnowballStemmer
+
 stemmer = SnowballStemmer("english")
 
 

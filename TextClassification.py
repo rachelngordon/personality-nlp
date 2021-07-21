@@ -22,6 +22,10 @@ df = pd.read_csv('mbti_1.csv')
 print(df.head())
 print(df.shape)
 
+# check how many observations of each type are in the data set
+plt.bar(df['type'].unique(), df['type'].value_counts())
+plt.show()
+
 
 ## REMOVE STOPWORDS AND PUNCTUATION
 
@@ -107,6 +111,14 @@ val = pd.read_csv('val.csv')
 #print(val.head())
 test = pd.read_csv('test.csv')
 #print(test.head())
+
+
+# check the distribution of MBTI types in the training data
+plt.bar(train['type'].unique(), train['type'].value_counts())
+plt.savefig('train_counts.png', dpi = 200)
+
+# very lopsided: mostly 'IN' types and very few 'ES' types
+
 
 
 # define a function to tokenize and stem the data
